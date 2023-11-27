@@ -22,7 +22,7 @@
             </Button.Resources>
         </Button>
         <Label x:Name="label1" Content="Voice" Height="25" Margin="5,5,0,0" Width="140" VerticalAlignment="Top" d:LayoutOverrides="Height" HorizontalAlignment="Left" Foreground="White"/>
-        <Button x:Name="btnBrowse" Content="Browse generated files" Margin="5,0,0,35" Width="140" Background="#FF222222" BorderBrush="{x:Null}" Foreground="White" Cursor="Hand" HorizontalAlignment="Left" d:LayoutOverrides="Width" Height="33" VerticalAlignment="Bottom">
+        <Button x:Name="btnBrowse" Content="Open audio player" Margin="5,0,0,35" Width="140" Background="#FF222222" BorderBrush="{x:Null}" Foreground="White" Cursor="Hand" HorizontalAlignment="Left" d:LayoutOverrides="Width" Height="33" VerticalAlignment="Bottom">
             <Button.Resources>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="CornerRadius" Value="10"/>

@@ -96,8 +96,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AudioPlayer.xaml.vb">
+      <DependentUpon>AudioPlayer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AvailableCredits.vb" />
     <Compile Include="VoiceListItem.vb" />
+    <Page Include="AudioPlayer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

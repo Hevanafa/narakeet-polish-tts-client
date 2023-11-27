@@ -1,4 +1,4 @@
-Imports System.Net
+﻿Imports System.Net
 Imports System.Net.Http
 Imports System.IO
 Imports System.Text
@@ -277,6 +277,12 @@ Class MainWindow
     End Sub
 
     Private Sub BtnBrowse_Click(sender As Object, e As RoutedEventArgs) Handles btnBrowse.Click
-        Process.Start(AppDomain.CurrentDomain.BaseDirectory + Path.DirectorySeparatorChar + generated_dir)
+        'Process.Start(AppDomain.CurrentDomain.BaseDirectory + Path.DirectorySeparatorChar + generated_dir)
+
+        Dim player As New AudioPlayer With {
+            .Owner = Me
+        }
+
+        player.ShowDialog()
     End Sub
 End Class
