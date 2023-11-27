@@ -183,4 +183,8 @@ Class MainWindow
         btnSubmit.IsEnabled = True
         btnSubmit.Content = "Submit"
     End Sub
+
+    Private Sub Canvas_MouseDown(sender As Object, e As MouseButtonEventArgs)
+        Process.Start("https://www.narakeet.com/")
+    End Sub
 End Class

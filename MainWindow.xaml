@@ -16,7 +16,7 @@
         <Label x:Name="label" Content="Script" Margin="155,5,0,0" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" d:LayoutOverrides="HorizontalAlignment"/>
         <Button x:Name="btnSubmit" Content="Submit" Height="33" Margin="0,0,7,28" Width="130" VerticalAlignment="Bottom" d:LayoutOverrides="Width, Height" HorizontalAlignment="Right" Cursor="Hand"/>
         <Label x:Name="label1" Content="Speaker" Height="25" Margin="5,5,0,0" Width="88" VerticalAlignment="Top" d:LayoutOverrides="Width, Height" HorizontalAlignment="Left"/>
-        <Canvas Height="38" Margin="0,0,7,5" Width="122" VerticalAlignment="Bottom" Grid.Row="1" HorizontalAlignment="Right" d:LayoutOverrides="Width">
+        <Canvas Height="38" Margin="0,0,7,5" Width="150" VerticalAlignment="Bottom" Grid.Row="1" HorizontalAlignment="Right" Cursor="Hand" ToolTip="Click to visit Narakeet's official website" MouseDown="Canvas_MouseDown">
             <Canvas.Background>
                 <ImageBrush ImageSource="/nklogo-transparent.png" Stretch="Uniform"/>
             </Canvas.Background>
