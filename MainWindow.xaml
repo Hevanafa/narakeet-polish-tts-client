@@ -28,6 +28,7 @@
                     <ImageBrush ImageSource="/nklogo-transparent.png" Stretch="Uniform"/>
                 </Canvas.Background>
             </Canvas>
+            <Label x:Name="lblAvailableCredits" Content="Available Credits: 0g" Margin="5,5,0,4" HorizontalAlignment="Left" Foreground="White" VerticalAlignment="Center"/>
         </Grid>
 
     </Grid>

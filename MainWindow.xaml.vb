@@ -6,6 +6,11 @@ Imports System.Text
 Imports Newtonsoft.Json
 
 Class MainWindow
+    Dim api_key$
+    Dim _30s& = 30_000_000_000
+
+    Dim available_credits As AvailableCredits
+
     Private Async Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
         Dim lbi As New ListBoxItem With {
             .Content = "Loading voice list..."
@@ -20,11 +25,48 @@ Class MainWindow
             MessageBox.Show("Please make the file for API key: ""api_key.txt"", which contains 1 line of your Narakeet API key.")
             lbi.Content = "API key is not ready!"
         Else
+            UpdateAvailableCreditsLabel()
+            Await RetrieveAvailableCredits()
             Await RetrieveVoiceList()
         End If
     End Sub
 
-    Dim api_key$
+
+    Sub UpdateAvailableCreditsLabel()
+        Dim seconds% = If(available_credits Is Nothing, 0, available_credits.creditSeconds)
+
+        Dim mins% = seconds / 60
+        Dim secs% = seconds Mod 60
+
+        lblAvailableCredits.Content = If(
+            available_credits Is Nothing,
+            "Available Credits: Receiving data...",
+            $"Available Credits: {mins}:{secs:00}")
+    End Sub
+
+
+    Async Function RetrieveAvailableCredits() As Task(Of Boolean)
+        Using client As New HttpClient With {.Timeout = New TimeSpan(_30s)}
+            With client.DefaultRequestHeaders
+                .Add("x-api-key", api_key)
+            End With
+
+            Dim req As New HttpRequestMessage(HttpMethod.Get, $"https://api.narakeet.com/account/credits")
+            Using res As HttpResponseMessage = Await client.SendAsync(req)
+                res.EnsureSuccessStatusCode()
+
+                'Using dest As FileStream = File.Create("temp.json")
+                '    Await res.Content.CopyToAsync(dest)
+                'End Using
+
+                Dim json_data$ = Encoding.UTF8.GetString(Await res.Content.ReadAsByteArrayAsync())
+                available_credits = JsonConvert.DeserializeObject(Of AvailableCredits)(json_data)
+
+                UpdateAvailableCreditsLabel()
+            End Using
+        End Using
+
+    End Function
 
     Async Function ReadApiKey() As Task(Of Boolean)
         If Not File.Exists("api_key.txt") Then _
@@ -137,17 +179,16 @@ Class MainWindow
         End If
 
         Try
-            Dim _30ms& = 30_000_000_000
-            Using client As New HttpClient With {.Timeout = New TimeSpan(_30ms)}
-
-                Dim req As New HttpRequestMessage(HttpMethod.Post, $"https://api.narakeet.com/text-to-speech/mp3?voice={voice}")
+            Using client As New HttpClient With {.Timeout = New TimeSpan(_30s)}
                 With client.DefaultRequestHeaders
                     .Accept.Clear()
                     .Add("accept", "application/octet-stream")
                     .Add("x-api-key", api_key)
                 End With
 
-                req.Content = New StringContent(script$, Encoding.UTF8, "text/plain")
+                Dim req As New HttpRequestMessage(HttpMethod.Post, $"https://api.narakeet.com/text-to-speech/mp3?voice={voice}") With {
+                    .Content = New StringContent(script$, Encoding.UTF8, "text/plain")
+                }
 
                 Using res As HttpResponseMessage = Await client.SendAsync(req)
                     res.EnsureSuccessStatusCode()
