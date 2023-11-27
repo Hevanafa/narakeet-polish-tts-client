@@ -200,6 +200,7 @@ Class MainWindow
             End Using
 
             MessageBox.Show("Saved as " + result_file)
+
         Catch ex As Exception
             MessageBox.Show("Failed to generate the TTS." + vbCrLf + "Reason: " + ex.Message, "Failure", MessageBoxButton.OK, MessageBoxImage.Error)
 
@@ -216,6 +217,10 @@ Class MainWindow
         btnSubmit.Content = "Waiting..."
 
         Await AttemptSubmitScript()
+
+        available_credits = Nothing
+        UpdateAvailableCreditsLabel()
+        Await RetrieveAvailableCredits()
 
         'If Not Await AttemptSubmitScript() Then
         '    Using sr As New StreamReader("failure.txt")
