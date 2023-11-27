@@ -11,11 +11,11 @@ Imports System.Windows
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("NarakeetPolishDemo")>
+<Assembly: AssemblyTitle("UnofficialNarakeetPolishTTS")>
 <Assembly: AssemblyDescription("")>
 <Assembly: AssemblyCompany("")>
-<Assembly: AssemblyProduct("NarakeetPolishDemo")>
-<Assembly: AssemblyCopyright("Copyright ©  2023")>
+<Assembly: AssemblyProduct("UnofficialNarakeetPolishTTS")>
+<Assembly: AssemblyCopyright("By Hevanafa, 2023")>
 <Assembly: AssemblyTrademark("")>
 <Assembly: ComVisible(false)>
 
@@ -55,5 +55,5 @@ Imports System.Windows
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")>
 
-<Assembly: AssemblyVersion("1.0.0.0")>
-<Assembly: AssemblyFileVersion("1.0.0.0")>
+<Assembly: AssemblyVersion("0.1.1.0")>
+<Assembly: AssemblyFileVersion("0.1.1.0")>
