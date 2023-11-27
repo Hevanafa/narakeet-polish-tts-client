@@ -1,4 +1,4 @@
-﻿Imports System.Net
+Imports System.Net
 Imports System.Net.Http
 Imports System.IO
 Imports System.Text
@@ -7,14 +7,14 @@ Imports Newtonsoft.Json
 
 Class MainWindow
     Dim api_key$
-    Dim _30s& = 30_000_000_000
 
-    Const generated_dir$ = "generated"
+    Public Const generated_dir$ = "generated"
 
     Dim available_credits As AvailableCredits
 
     Private Async Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
         CheckGeneratedFolder()
+        SetDefaultAvailableCreditsLabel()
 
         Dim lbi As New ListBoxItem With {
             .Content = "Loading voice list..."
@@ -28,7 +28,6 @@ Class MainWindow
         If String.IsNullOrWhiteSpace(api_key) Then
             MessageBox.Show("Please make the file for API key: ""api_key.txt"", which contains 1 line of your Narakeet API key.")
             lbi.Content = "API key is not ready!"
-            SetDefaultAvailableCreditsLabel
         Else
             Await RetrieveVoiceList()
             UpdateAvailableCreditsLabel()
@@ -55,7 +54,7 @@ Class MainWindow
 
     Async Function RetrieveAvailableCredits() As Task(Of Boolean)
         Try
-            Using client As New HttpClient With {.Timeout = New TimeSpan(_30s)}
+            Using client As New HttpClient With {.Timeout = TimeSpan.FromSeconds(30)}
                 With client.DefaultRequestHeaders
                     .Add("x-api-key", api_key)
                 End With
@@ -215,7 +214,7 @@ Class MainWindow
         End If
 
         Try
-            Using client As New HttpClient With {.Timeout = New TimeSpan(_30s)}
+            Using client As New HttpClient With {.Timeout = TimeSpan.FromSeconds(30)}
                 With client.DefaultRequestHeaders
                     .Accept.Clear()
                     .Add("accept", "application/octet-stream")
