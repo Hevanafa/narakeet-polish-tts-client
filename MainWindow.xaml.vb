@@ -9,9 +9,13 @@ Class MainWindow
     Dim api_key$
     Dim _30s& = 30_000_000_000
 
+    Const generated_dir$ = "generated"
+
     Dim available_credits As AvailableCredits
 
     Private Async Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
+        CheckGeneratedFolder()
+
         Dim lbi As New ListBoxItem With {
             .Content = "Loading voice list..."
         }
@@ -25,9 +29,9 @@ Class MainWindow
             MessageBox.Show("Please make the file for API key: ""api_key.txt"", which contains 1 line of your Narakeet API key.")
             lbi.Content = "API key is not ready!"
         Else
+            Await RetrieveVoiceList()
             UpdateAvailableCreditsLabel()
             Await RetrieveAvailableCredits()
-            Await RetrieveVoiceList()
         End If
     End Sub
 
@@ -41,7 +45,7 @@ Class MainWindow
         lblAvailableCredits.Content = If(
             available_credits Is Nothing,
             "Available Credits: Receiving data...",
-            $"Available Credits: {mins}:{secs:00}")
+            $"Available Credits: {mins}:{secs:00} ({seconds} s)")
     End Sub
 
 
@@ -139,7 +143,12 @@ Class MainWindow
 
 
     Function GetValidNextFilename$(speaker$)
-        Dim dir_info = FileIO.FileSystem.GetDirectoryInfo(AppDomain.CurrentDomain.BaseDirectory)
+        Dim separator$ = Path.DirectorySeparatorChar
+
+        Dim dir_info = FileIO.FileSystem.GetDirectoryInfo(
+                AppDomain.CurrentDomain.BaseDirectory + separator +
+                generated_dir$ + separator)
+
         speaker = speaker.ToLower
 
         Dim filenames$() =
@@ -154,14 +163,21 @@ Class MainWindow
             End Function).FirstOrDefault()
 
         If String.IsNullOrWhiteSpace(highest) Then
-            Return $"audio_{ speaker }_1.mp3"
+            Return $"{generated_dir$}{separator}audio_{ speaker }_1.mp3"
         End If
 
         Dim new_idx% = Val(highest.Split("_")(2))
         new_idx += 1
 
-        Return $"audio_{speaker}_{new_idx}.mp3"
+        Return $"{generated_dir$}{separator}audio_{speaker}_{new_idx}.mp3"
     End Function
+
+
+    Sub CheckGeneratedFolder()
+        If Directory.Exists("generated") Then Exit Sub
+
+        Directory.CreateDirectory("generated")
+    End Sub
 
 
     Async Function AttemptSubmitScript() As Task(Of Boolean)
@@ -171,6 +187,8 @@ Class MainWindow
 
         Dim voice$ = selectedVoice.Content
         Dim script$ = txbScript.Text
+
+        CheckGeneratedFolder()
         Dim result_file$ = GetValidNextFilename(voice)
 
         If String.IsNullOrWhiteSpace(script) Then
@@ -235,5 +253,9 @@ Class MainWindow
 
     Private Sub Canvas_MouseDown(sender As Object, e As MouseButtonEventArgs)
         Process.Start("https://www.narakeet.com/")
+    End Sub
+
+    Private Sub btnBrowse_Click(sender As Object, e As RoutedEventArgs) Handles btnBrowse.Click
+        Process.Start(AppDomain.CurrentDomain.BaseDirectory + Path.DirectorySeparatorChar + generated_dir)
     End Sub
 End Class
