@@ -8,11 +8,11 @@
         Title="AudioPlayer" Height="450" Width="320" Loaded="Window_Loaded">
     <Grid>
         <ListBox x:Name="lsbAudioFiles" Margin="5,136,5,5" d:ItemsSource="{d:SampleData ItemCount=5}"/>
-        <Slider x:Name="slider" Height="25" Margin="5,41,5,0" VerticalAlignment="Top" d:LayoutOverrides="HorizontalAlignment"/>
+        <Slider x:Name="sldPlayer" Height="25" Margin="5,41,5,0" VerticalAlignment="Top" d:LayoutOverrides="HorizontalAlignment" LargeChange="5" SmallChange="1"/>
         <Button x:Name="btnPlay" Content="Play" Height="50" Margin="5,76,0,0" Width="50" HorizontalAlignment="Left" d:LayoutOverrides="Width, Height" VerticalAlignment="Top"/>
         <Button x:Name="btnPause" Content="Pause" Height="50" Margin="65,76,0,0" Width="50" VerticalAlignment="Top" d:LayoutOverrides="Width, Height" HorizontalAlignment="Left"/>
         <Button x:Name="btnStop" Content="Stop" Height="50" Margin="125,76,0,0" Width="50" HorizontalAlignment="Left" VerticalAlignment="Top" d:LayoutOverrides="Height"/>
-        <Label x:Name="lblPlayerTime" Content="0:00 / 0:00" Height="25" Margin="185,76,5,0" Width="130" VerticalAlignment="Top" d:LayoutOverrides="Height"/>
+        <Label x:Name="lblPlayerTime" Content="0:00 / 0:00" Height="50" Margin="185,76,5,0" Width="130" VerticalAlignment="Top" FontSize="16"/>
         <Label x:Name="lblCurrentItem" Content="(no played audio)" Height="26" Margin="5,5,5,0" d:LayoutOverrides="HorizontalAlignment, Height" VerticalAlignment="Top"/>
 
     </Grid>
