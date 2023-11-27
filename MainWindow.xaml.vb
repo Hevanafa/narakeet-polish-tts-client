@@ -1,8 +1,9 @@
 ﻿Imports System.Net
 Imports System.Net.Http
 Imports System.IO
-Imports Newtonsoft.Json
 Imports System.Text
+
+Imports Newtonsoft.Json
 
 Class MainWindow
     Private Async Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
@@ -95,39 +96,40 @@ Class MainWindow
     End Sub
 
 
-    Function GetValidNextFilename$()
+    Function GetValidNextFilename$(speaker$)
         Dim dir_info = FileIO.FileSystem.GetDirectoryInfo(AppDomain.CurrentDomain.BaseDirectory)
+        speaker = speaker.ToLower
 
         Dim filenames$() =
             dir_info.EnumerateFiles.Where(
                 Function(file)
-                    Return file.Name.StartsWith("audio_") AndAlso Path.GetExtension(file.Name) = ".mp3"
+                    Return file.Name.StartsWith($"audio_{speaker}_") AndAlso Path.GetExtension(file.Name) = ".mp3"
                 End Function).Select(Function(file) file.Name).ToArray
 
         Dim highest$ = filenames.OrderBy(
             Function(filename$)
-                Return Val(Path.GetFileNameWithoutExtension(filename).Split("_")(1))
+                Return Val(Path.GetFileNameWithoutExtension(filename).Split("_")(2))
             End Function).FirstOrDefault()
 
         If String.IsNullOrWhiteSpace(highest) Then
-            Return "audio_1.mp3"
+            Return $"audio_{ speaker }_1.mp3"
         End If
 
-        Dim new_idx% = Val(highest.Split("_")(1))
+        Dim new_idx% = Val(highest.Split("_")(2))
         new_idx += 1
 
-        Return $"audio_{new_idx}.mp3"
+        Return $"audio_{speaker}_{new_idx}.mp3"
     End Function
 
 
     Async Function AttemptSubmitScript() As Task(Of Boolean)
         ' try to download the audio in mp3 format
-        Dim item As ListBoxItem = lsbVoices.SelectedItem
-        If item Is Nothing Then Return False
+        Dim selectedVoice As ListBoxItem = lsbVoices.SelectedItem
+        If selectedVoice Is Nothing Then Return False
 
-        Dim voice$ = item.Content
+        Dim voice$ = selectedVoice.Content
         Dim script$ = txbScript.Text
-        Dim result_file$ = GetValidNextFilename()
+        Dim result_file$ = GetValidNextFilename(voice)
 
         If String.IsNullOrWhiteSpace(script) Then
             MessageBox.Show("Please provide the script.")
@@ -135,7 +137,8 @@ Class MainWindow
         End If
 
         Try
-            Using client As New HttpClient With {.Timeout = New TimeSpan(30000000000)}
+            Dim _30ms& = 30_000_000_000
+            Using client As New HttpClient With {.Timeout = New TimeSpan(_30ms)}
 
                 Dim req As New HttpRequestMessage(HttpMethod.Post, $"https://api.narakeet.com/text-to-speech/mp3?voice={voice}")
                 With client.DefaultRequestHeaders
@@ -157,7 +160,7 @@ Class MainWindow
 
             MessageBox.Show("Saved as " + result_file)
         Catch ex As Exception
-            MessageBox.Show("Failed to generate the TTS." + vbCrLf + "Reason: " + ex.Message)
+            MessageBox.Show("Failed to generate the TTS." + vbCrLf + "Reason: " + ex.Message, "Failure", MessageBoxButton.OK, MessageBoxImage.Error)
 
             Using sw As New StreamWriter("failure.txt")
                 sw.WriteLine(ex.Message)
