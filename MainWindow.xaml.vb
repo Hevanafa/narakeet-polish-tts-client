@@ -28,6 +28,7 @@ Class MainWindow
         If String.IsNullOrWhiteSpace(api_key) Then
             MessageBox.Show("Please make the file for API key: ""api_key.txt"", which contains 1 line of your Narakeet API key.")
             lbi.Content = "API key is not ready!"
+            SetDefaultAvailableCreditsLabel
         Else
             Await RetrieveVoiceList()
             UpdateAvailableCreditsLabel()
@@ -35,6 +36,9 @@ Class MainWindow
         End If
     End Sub
 
+    Sub SetDefaultAvailableCreditsLabel()
+        lblAvailableCredits.Content = "Available Credits: 0"
+    End Sub
 
     Sub UpdateAvailableCreditsLabel()
         Dim seconds% = If(available_credits Is Nothing, 0, available_credits.creditSeconds)
@@ -50,26 +54,39 @@ Class MainWindow
 
 
     Async Function RetrieveAvailableCredits() As Task(Of Boolean)
-        Using client As New HttpClient With {.Timeout = New TimeSpan(_30s)}
-            With client.DefaultRequestHeaders
-                .Add("x-api-key", api_key)
-            End With
+        Try
+            Using client As New HttpClient With {.Timeout = New TimeSpan(_30s)}
+                With client.DefaultRequestHeaders
+                    .Add("x-api-key", api_key)
+                End With
 
-            Dim req As New HttpRequestMessage(HttpMethod.Get, $"https://api.narakeet.com/account/credits")
-            Using res As HttpResponseMessage = Await client.SendAsync(req)
-                res.EnsureSuccessStatusCode()
+                Dim req As New HttpRequestMessage(HttpMethod.Get, $"https://api.narakeet.com/account/credits")
+                Using res As HttpResponseMessage = Await client.SendAsync(req)
+                    res.EnsureSuccessStatusCode()
 
-                'Using dest As FileStream = File.Create("temp.json")
-                '    Await res.Content.CopyToAsync(dest)
-                'End Using
+                    'Using dest As FileStream = File.Create("temp.json")
+                    '    Await res.Content.CopyToAsync(dest)
+                    'End Using
 
-                Dim json_data$ = Encoding.UTF8.GetString(Await res.Content.ReadAsByteArrayAsync())
-                available_credits = JsonConvert.DeserializeObject(Of AvailableCredits)(json_data)
+                    Dim json_data$ = Encoding.UTF8.GetString(Await res.Content.ReadAsByteArrayAsync())
+                    available_credits = JsonConvert.DeserializeObject(Of AvailableCredits)(json_data)
 
-                UpdateAvailableCreditsLabel()
+                    UpdateAvailableCreditsLabel()
+                End Using
             End Using
-        End Using
 
+            Return True
+        Catch ex As Exception
+            SetDefaultAvailableCreditsLabel()
+
+            MessageBox.Show(
+                "Failed to retrieve available credits." + vbCrLf + "Reason: " + ex.Message,
+                "Failure",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error)
+
+            Return False
+        End Try
     End Function
 
     Async Function ReadApiKey() As Task(Of Boolean)
@@ -126,6 +143,7 @@ Class MainWindow
             Return False
         End Try
     End Function
+
 
     Sub UpdateVoiceList()
         lsbVoices.Items.Clear()
@@ -220,17 +238,21 @@ Class MainWindow
             MessageBox.Show("Saved as " + result_file)
 
         Catch ex As Exception
-            MessageBox.Show("Failed to generate the TTS." + vbCrLf + "Reason: " + ex.Message, "Failure", MessageBoxButton.OK, MessageBoxImage.Error)
+            MessageBox.Show(
+                "Failed to generate the TTS." + vbCrLf + "Reason: " + ex.Message,
+                "Failure",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error)
 
-            Using sw As New StreamWriter("failure.txt")
-                sw.WriteLine(ex.Message)
-            End Using
+            'Using sw As New StreamWriter("failure.txt")
+            '    sw.WriteLine(ex.Message)
+            'End Using
         End Try
 
         Return True
     End Function
 
-    Private Async Sub btnSubmit_Click(sender As Object, e As RoutedEventArgs) Handles btnSubmit.Click
+    Private Async Sub BtnSubmit_Click(sender As Object, e As RoutedEventArgs) Handles btnSubmit.Click
         btnSubmit.IsEnabled = False
         btnSubmit.Content = "Waiting..."
 
@@ -255,7 +277,7 @@ Class MainWindow
         Process.Start("https://www.narakeet.com/")
     End Sub
 
-    Private Sub btnBrowse_Click(sender As Object, e As RoutedEventArgs) Handles btnBrowse.Click
+    Private Sub BtnBrowse_Click(sender As Object, e As RoutedEventArgs) Handles btnBrowse.Click
         Process.Start(AppDomain.CurrentDomain.BaseDirectory + Path.DirectorySeparatorChar + generated_dir)
     End Sub
 End Class
