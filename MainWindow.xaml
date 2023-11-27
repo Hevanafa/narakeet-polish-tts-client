@@ -5,22 +5,30 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NarakeetPolishDemo"
         mc:Ignorable="d"
-        Title="Narakeet Polish TTS Client - By Hevanafa (Nov 2023)" Height="359" Width="407" Loaded="Window_Loaded">
-    <Grid>
+        Title="Narakeet Polish TTS Client - By Hevanafa (Nov 2023)" Height="372" Width="407" Loaded="Window_Loaded">
+    <Grid Background="#FF1A1A1A">
         <Grid.RowDefinitions>
             <RowDefinition Height="318*"/>
             <RowDefinition Height="25*"/>
         </Grid.RowDefinitions>
-        <ListBox x:Name="lsbVoices" Margin="5,40,0,71" Width="140" HorizontalAlignment="Left"/>
-        <TextBox x:Name="txbScript" Margin="155,40,7,71" TextWrapping="Wrap" Text="Dzień dobry!"/>
-        <Label x:Name="label" Content="Script" Margin="155,5,0,0" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" d:LayoutOverrides="HorizontalAlignment"/>
-        <Button x:Name="btnSubmit" Content="Submit" Height="33" Margin="0,0,7,28" Width="130" VerticalAlignment="Bottom" d:LayoutOverrides="Width, Height" HorizontalAlignment="Right" Cursor="Hand"/>
-        <Label x:Name="label1" Content="Speaker" Height="25" Margin="5,5,0,0" Width="88" VerticalAlignment="Top" d:LayoutOverrides="Width, Height" HorizontalAlignment="Left"/>
-        <Canvas Height="38" Margin="0,0,7,5" Width="150" VerticalAlignment="Bottom" Grid.Row="1" HorizontalAlignment="Right" Cursor="Hand" ToolTip="Click to visit Narakeet's official website" MouseDown="Canvas_MouseDown">
-            <Canvas.Background>
-                <ImageBrush ImageSource="/nklogo-transparent.png" Stretch="Uniform"/>
-            </Canvas.Background>
-        </Canvas>
+        <ListBox x:Name="lsbVoices" Margin="5,40,0,78" Width="140" HorizontalAlignment="Left" Background="#FF222222" Foreground="White" BorderBrush="{x:Null}"/>
+        <TextBox x:Name="txbScript" Margin="155,40,7,78" TextWrapping="Wrap" Text="Dzień dobry!" Background="#FF222222" Foreground="White" BorderBrush="{x:Null}"/>
+        <Label x:Name="label" Content="Script" Margin="155,5,0,0" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" d:LayoutOverrides="HorizontalAlignment" Foreground="White"/>
+        <Button x:Name="btnSubmit" Content="Submit" Height="33" Margin="0,0,7,35" Width="130" VerticalAlignment="Bottom" d:LayoutOverrides="Width" HorizontalAlignment="Right" Cursor="Hand" Background="#FFFFFD00" BorderBrush="{x:Null}" FontSize="14">
+            <Button.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="10"></Setter>
+                </Style>
+            </Button.Resources>
+        </Button>
+        <Label x:Name="label1" Content="Voice" Height="25" Margin="5,5,0,0" Width="140" VerticalAlignment="Top" d:LayoutOverrides="Height" HorizontalAlignment="Left" Foreground="White"/>
+        <Grid Margin="0,-25,0,0" Grid.Row="1" d:LayoutOverrides="HorizontalAlignment, VerticalAlignment" Background="#FF222222">
+            <Canvas Margin="0,3,15,4" Cursor="Hand" ToolTip="Click to visit Narakeet's official website" MouseDown="Canvas_MouseDown" HorizontalAlignment="Right" Width="150">
+                <Canvas.Background>
+                    <ImageBrush ImageSource="/nklogo-transparent.png" Stretch="Uniform"/>
+                </Canvas.Background>
+            </Canvas>
+        </Grid>
 
     </Grid>
 </Window>
