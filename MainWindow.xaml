@@ -1,0 +1,26 @@
+﻿<Window x:Class="MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NarakeetPolishDemo"
+        mc:Ignorable="d"
+        Title="Narakeet Polish TTS Client - By Hevanafa (Nov 2023)" Height="359" Width="407" Loaded="Window_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="318*"/>
+            <RowDefinition Height="25*"/>
+        </Grid.RowDefinitions>
+        <ListBox x:Name="lsbVoices" Margin="5,40,0,71" Width="140" HorizontalAlignment="Left"/>
+        <TextBox x:Name="txbScript" Margin="155,40,7,71" TextWrapping="Wrap" Text="Dzień dobry!"/>
+        <Label x:Name="label" Content="Script" Margin="155,5,0,0" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" d:LayoutOverrides="HorizontalAlignment"/>
+        <Button x:Name="btnSubmit" Content="Submit" Height="33" Margin="0,0,7,28" Width="130" VerticalAlignment="Bottom" d:LayoutOverrides="Width, Height" HorizontalAlignment="Right" Cursor="Hand"/>
+        <Label x:Name="label1" Content="Speaker" Height="25" Margin="5,5,0,0" Width="88" VerticalAlignment="Top" d:LayoutOverrides="Width, Height" HorizontalAlignment="Left"/>
+        <Canvas Height="38" Margin="0,0,7,5" Width="122" VerticalAlignment="Bottom" Grid.Row="1" HorizontalAlignment="Right" d:LayoutOverrides="Width">
+            <Canvas.Background>
+                <ImageBrush ImageSource="/nklogo-transparent.png" Stretch="Uniform"/>
+            </Canvas.Background>
+        </Canvas>
+
+    </Grid>
+</Window>
