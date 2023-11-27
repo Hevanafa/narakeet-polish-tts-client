@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NarakeetPolishDemo"
         mc:Ignorable="d"
-        Title="Narakeet Polish TTS Client - By Hevanafa (Nov 2023)" Height="372" Width="407" Loaded="Window_Loaded">
+        Title="Unofficial Narakeet Polish TTS Client - By Hevanafa (Nov 2023)" Height="372" Width="510" Loaded="Window_Loaded" Icon="/nklogo-transparent_square.png">
     <Grid Background="#FF1A1A1A">
         <Grid.RowDefinitions>
             <RowDefinition Height="318*"/>
