@@ -48,7 +48,7 @@ Public Class AudioPlayer
 
     Dim current_filename$
 
-    Sub PlaySelectedItem()
+    Sub PlayOrPause()
         Dim lbi As ListBoxItem = lsbAudioFiles.SelectedItem
 
         If lbi Is Nothing Then Exit Sub
@@ -60,32 +60,22 @@ Public Class AudioPlayer
                     lbi.Content
 
             If new_filename = current_filename Then
+                ' Play / Pause
                 If media_player.Clock.CurrentState = Animation.ClockState.Stopped Then
                     media_player.Clock.Controller.Seek(TimeSpan.FromSeconds(0), Animation.TimeSeekOrigin.BeginTime)
                     media_player.Clock.Controller.Begin()
                 Else
-                    ' Resume playback
-                    media_player.Clock.Controller.Resume()
+                    If media_player.Clock.IsPaused Then
+                        ' Resume playback
+                        media_player.Clock.Controller.Resume()
+                        audio_timer.Start()
+                    Else
+                        media_player.Clock.Controller.Pause()
+                        audio_timer.Stop()
+                    End If
                 End If
             Else
-                ' Play new file
-                If media_player.Clock IsNot Nothing Then
-                    media_player.Clock.Controller.Stop()
-                End If
-
-                media_player.Clock = Nothing
-                current_filename = new_filename
-
-                Dim target_uri = New Uri(current_filename)
-                Dim tl As New MediaTimeline(target_uri)
-                Dim media_clock As MediaClock = tl.CreateClock(True)
-                media_player.Clock = media_clock
-
-                lblCurrentItem.Content = lbi.Content
-                'Debug.Print(media_player.Clock.CurrentState.ToString)
-                media_player.Clock.Controller.Begin()
-                Debug.Print("is buffering? " + media_player.IsBuffering.ToString)
-                'Debug.Print(media_player.Clock.CurrentState.ToString)
+                PlaySelectedItem()
             End If
 
             audio_timer.Start()
@@ -100,19 +90,43 @@ Public Class AudioPlayer
         End Try
     End Sub
 
+    Sub PlaySelectedItem()
+        Dim lbi As ListBoxItem = lsbAudioFiles.SelectedItem
+
+        If lbi Is Nothing Then Exit Sub
+
+        ' Play new file
+        If media_player.Clock IsNot Nothing Then
+            media_player.Clock.Controller.Stop()
+        End If
+
+        Dim new_filename = AppDomain.CurrentDomain.BaseDirectory + Path.DirectorySeparatorChar +
+                    MainWindow.generated_dir + Path.DirectorySeparatorChar +
+                    lbi.Content
+
+        media_player.Clock = Nothing
+        current_filename = new_filename
+
+        Dim target_uri = New Uri(current_filename)
+        Dim tl As New MediaTimeline(target_uri)
+        Dim media_clock As MediaClock = tl.CreateClock(True)
+        media_player.Clock = media_clock
+        media_player.Clock.Controller.Stop()
+
+        lblCurrentItem.Content = lbi.Content
+        If media_player.Clock.CurrentState = Animation.ClockState.Stopped Then
+            media_player.Clock.Controller.Begin()
+        End If
+    End Sub
+
     Private Sub lsbAudioFiles_MouseDoubleClick(sender As Object, e As MouseButtonEventArgs) Handles lsbAudioFiles.MouseDoubleClick
-        PlaySelectedItem()
+        PlayOrPause()
     End Sub
 
     Private Sub lsbAudioFiles_KeyDown(sender As Object, e As KeyEventArgs) Handles lsbAudioFiles.KeyDown
         If e.Key = Key.Enter Then
-            PlaySelectedItem()
+            PlayOrPause()
         End If
-    End Sub
-
-    Private Sub btnPause_Click(sender As Object, e As RoutedEventArgs) Handles btnPause.Click
-        media_player.Clock.Controller.Pause()
-        audio_timer.Stop()
     End Sub
 
     Private Sub btnStop_Click(sender As Object, e As RoutedEventArgs) Handles btnStop.Click
@@ -120,8 +134,8 @@ Public Class AudioPlayer
         audio_timer.Stop()
     End Sub
 
-    Private Sub btnPlay_Click(sender As Object, e As RoutedEventArgs) Handles btnPlay.Click
-        PlaySelectedItem()
+    Private Sub btnPlay_Click(sender As Object, e As RoutedEventArgs) Handles btnPlayPause.Click
+        PlayOrPause()
     End Sub
 
     Private Sub sldPlayer_MouseUp(sender As Object, e As MouseButtonEventArgs) Handles sldPlayer.MouseUp
