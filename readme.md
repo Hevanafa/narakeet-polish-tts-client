@@ -1,6 +1,10 @@
 # Unofficial Narakeet Polish TTS Client
 
+An unofficial Narakeet TTS Client for Polish.
+
 ![Preview](./preview.png)
+
+![Audio player preview](./audio_player_preview.png)
 
 ## Requirements
 
