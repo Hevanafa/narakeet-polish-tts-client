@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UnofficialNarakeetPolishTTSClient"
         mc:Ignorable="d"
-        Title="AudioPlayer" Height="450" Width="320" Loaded="Window_Loaded">
+        Title="AudioPlayer" Height="450" Width="320" Loaded="Window_Loaded" Closing="Window_Closing">
     <Grid Background="#FF1A1A1A">
         <ListBox x:Name="lsbAudioFiles" Margin="5,136,5,5" d:ItemsSource="{d:SampleData ItemCount=5}" BorderBrush="{x:Null}" Background="#FF222222" Foreground="White">
 

@@ -32,7 +32,10 @@ Public Class AudioPlayer
     Sub Audio_Timer_Tick(sender As Object, e As EventArgs)
         If mp3_reader Is Nothing Then
             lblPlayerTime.Content = "0:00 / 0:00"
+            ChangePlayImage(False)
         Else
+            ChangePlayImage(Not (wave_out.PlaybackState = PlaybackState.Stopped))
+
             ' https://stackoverflow.com/questions/39548466
             Dim bytes = wave_out.OutputWaveFormat.AverageBytesPerSecond
 
@@ -81,15 +84,19 @@ Public Class AudioPlayer
 
             If new_filename = current_filename Then
                 ' Play / Pause
-                If wave_out.PlaybackState = PlaybackState.Paused Then
-                    imgPlayPause.Source = New BitmapImage(resourceUri("Images/pause_Inkubators.png"))
-                    wave_out.Play()
-                Else
-                    imgPlayPause.Source = New BitmapImage(resourceUri("Images/play-button-arrowhead_Freepik.png"))
-                    wave_out.Pause()
-                End If
+                Select Case wave_out.PlaybackState
+                    Case PlaybackState.Paused
+                        ChangePlayImage(True)
+                        wave_out.Play()
+                    Case PlaybackState.Playing
+                        ChangePlayImage(False)
+                        wave_out.Pause()
+                    Case Else
+                        mp3_reader.Position = 0
+                        wave_out.Play()
+                End Select
             Else
-                imgPlayPause.Source = New BitmapImage(resourceUri("Images/pause_Inkubators.png"))
+                ChangePlayImage(True)
                 PlaySelectedItem()
             End If
 
@@ -129,7 +136,7 @@ Public Class AudioPlayer
                     MainWindow.generated_dir + Path.DirectorySeparatorChar +
                     lbi.Content
 
-        DisposeMp3Reader
+        DisposeMp3Reader()
 
         ' https://stackoverflow.com/questions/2488426
         mp3_reader = New Mp3FileReader(new_filename)
@@ -152,10 +159,16 @@ Public Class AudioPlayer
         End If
     End Sub
 
+    Sub ChangePlayImage(pause As Boolean)
+        imgPlayPause.Source = If(pause,
+            New BitmapImage(resourceUri("Images/pause_Inkubators.png")),
+            New BitmapImage(resourceUri("Images/play-button-arrowhead_Freepik.png")))
+    End Sub
+
     Private Sub btnStop_Click(sender As Object, e As RoutedEventArgs) Handles btnStop.Click
         If wave_out.PlaybackState = PlaybackState.Stopped Then Exit Sub
 
-        imgPlayPause.Source = New BitmapImage(resourceUri("Images/play-button-arrowhead_Freepik.png"))
+        ChangePlayImage(False)
         wave_out.Stop()
         DisposeMp3Reader()
     End Sub
@@ -163,7 +176,8 @@ Public Class AudioPlayer
     Private Sub btnPlay_Click(sender As Object, e As RoutedEventArgs) Handles btnPlayPause.Click
         If lsbAudioFiles.Items.IsEmpty Then Exit Sub
 
-        lsbAudioFiles.SelectedIndex = 0
+        If lsbAudioFiles.SelectedIndex < 0 Then _
+            lsbAudioFiles.SelectedIndex = 0
 
         PlayOrPause()
     End Sub
@@ -180,5 +194,12 @@ Public Class AudioPlayer
 
     Private Sub sldPlayer_PreviewMouseDown(sender As Object, e As MouseButtonEventArgs) Handles sldPlayer.PreviewMouseDown
         isDraggingSeek = True
+    End Sub
+
+    Private Sub Window_Closing(sender As Object, e As ComponentModel.CancelEventArgs)
+        If wave_out IsNot Nothing Then _
+            wave_out.Stop()
+
+        DisposeMp3Reader()
     End Sub
 End Class
