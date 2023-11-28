@@ -32,7 +32,9 @@
             <Image x:Name="image1" Source="/Images/stop-button_Pixel perfect.png" Width="30"/>
         </Button>
         <Label x:Name="lblPlayerTime" Content="0:00 / 0:00" Height="50" Margin="185,76,5,0" Width="130" VerticalAlignment="Top" FontSize="16" Foreground="White"/>
-        <Label x:Name="lblCurrentItem" Content="(no played audio)" Height="26" Margin="5,5,5,0" d:LayoutOverrides="HorizontalAlignment, Height" VerticalAlignment="Top" Foreground="White"/>
+        <Label x:Name="lblCurrentItem" Height="26" Margin="5,5,5,0" d:LayoutOverrides="HorizontalAlignment, Height" VerticalAlignment="Top" Foreground="White">
+            <TextBlock x:Name="txbCurrentItem" TextWrapping="Wrap" Text="(No played item)" d:LayoutOverrides="TopPosition, BottomPosition"/>
+        </Label>
 
     </Grid>
 </Window>

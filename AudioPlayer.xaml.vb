@@ -146,7 +146,7 @@ Public Class AudioPlayer
 
         current_filename = new_filename
 
-        lblCurrentItem.Content = lbi.Content
+        txbCurrentItem.Text = lbi.Content
     End Sub
 
     Private Sub lsbAudioFiles_MouseDoubleClick(sender As Object, e As MouseButtonEventArgs) Handles lsbAudioFiles.MouseDoubleClick
