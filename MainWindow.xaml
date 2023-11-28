@@ -11,10 +11,25 @@
             <RowDefinition Height="318*"/>
             <RowDefinition Height="25*"/>
         </Grid.RowDefinitions>
-        <ListBox x:Name="lsbVoices" Margin="5,40,0,78" Width="140" HorizontalAlignment="Left" Background="#FF222222" Foreground="White" BorderBrush="{x:Null}"/>
+        <ListBox x:Name="lsbVoices" Margin="5,40,0,78" Width="140" HorizontalAlignment="Left" Background="#FF222222" Foreground="White" BorderBrush="{x:Null}">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True" >
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Foreground" Value="#FFFFFD00" />
+                        </Trigger>
+                    </Style.Triggers>
+                    <Style.Resources>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent"/>
+                    </Style.Resources>
+                </Style>
+            </ListBox.ItemContainerStyle>
+        </ListBox>
         <TextBox x:Name="txbScript" Margin="155,40,7,78" TextWrapping="Wrap" Text="Dzień dobry!" Background="#FF222222" Foreground="White" BorderBrush="{x:Null}"/>
         <Label x:Name="label" Content="Script" Margin="155,5,0,0" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" d:LayoutOverrides="HorizontalAlignment" Foreground="White"/>
         <Button x:Name="btnSubmit" Content="Submit" Height="33" Margin="0,0,7,35" Width="130" VerticalAlignment="Bottom" d:LayoutOverrides="Width" HorizontalAlignment="Right" Cursor="Hand" Background="#FFFFFD00" BorderBrush="{x:Null}" FontSize="14">
+
             <Button.Resources>
                 <Style TargetType="Border">
                     <Setter Property="CornerRadius" Value="10"></Setter>
@@ -23,13 +38,43 @@
         </Button>
         <Label x:Name="label1" Content="Voice" Height="25" Margin="5,5,0,0" Width="140" VerticalAlignment="Top" d:LayoutOverrides="Height" HorizontalAlignment="Left" Foreground="White"/>
         <Button x:Name="btnBrowse" Content="Open audio player" Margin="5,0,0,35" Width="140" Background="#FF222222" BorderBrush="{x:Null}" Foreground="White" Cursor="Hand" HorizontalAlignment="Left" d:LayoutOverrides="Width" Height="33" VerticalAlignment="Bottom">
+            <Button.Template>
+                <ControlTemplate TargetType="{x:Type ButtonBase}">
+                    <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                        <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="TextElement.Foreground" TargetName="border" Value="#FFFFFD00"/>
+                            <Setter Property="BorderBrush" TargetName="border" Value="#FFFFFD00"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+
             <Button.Resources>
                 <Style TargetType="{x:Type Border}">
                     <Setter Property="CornerRadius" Value="10"/>
                 </Style>
             </Button.Resources>
         </Button>
-        <Grid Margin="0,-25,0,0" Grid.Row="1" d:LayoutOverrides="HorizontalAlignment, VerticalAlignment" Background="#FF222222">
+        <Grid Margin="0,-25,0,0" Grid.Row="1" d:LayoutOverrides="HorizontalAlignment, VerticalAlignment">
+            <Grid.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <LinearGradientBrush.RelativeTransform>
+                        <TransformGroup>
+                            <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                            <SkewTransform CenterX="0.5" CenterY="0.5"/>
+                            <RotateTransform Angle="270" CenterX="0.5" CenterY="0.5"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </LinearGradientBrush.RelativeTransform>
+                    <GradientStop Color="Black"/>
+                    <GradientStop Color="#FFCCCCCC" Offset="1"/>
+                    <GradientStop Color="Black" Offset="0.5"/>
+                </LinearGradientBrush>
+            </Grid.Background>
             <Canvas Margin="0,3,15,4" Cursor="Hand" ToolTip="Click to visit Narakeet's official website" MouseDown="Canvas_MouseDown" HorizontalAlignment="Right" Width="150">
                 <Canvas.Background>
                     <ImageBrush ImageSource="/nklogo-transparent.png" Stretch="Uniform"/>

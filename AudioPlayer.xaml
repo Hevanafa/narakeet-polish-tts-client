@@ -6,13 +6,33 @@
         xmlns:local="clr-namespace:NarakeetPolishDemo"
         mc:Ignorable="d"
         Title="AudioPlayer" Height="450" Width="320" Loaded="Window_Loaded">
-    <Grid>
-        <ListBox x:Name="lsbAudioFiles" Margin="5,136,5,5" d:ItemsSource="{d:SampleData ItemCount=5}"/>
-        <Slider x:Name="sldPlayer" Height="25" Margin="5,41,5,0" VerticalAlignment="Top" d:LayoutOverrides="HorizontalAlignment" LargeChange="5" SmallChange="1"/>
-        <Button x:Name="btnPlayPause" Content="Play / Pause" Height="50" Margin="5,76,0,0" Width="50" HorizontalAlignment="Left" d:LayoutOverrides="Width, Height" VerticalAlignment="Top"/>
-        <Button x:Name="btnStop" Content="Stop" Height="50" Margin="65,76,0,0" Width="50" HorizontalAlignment="Left" VerticalAlignment="Top" d:LayoutOverrides="HorizontalAlignment, Height"/>
-        <Label x:Name="lblPlayerTime" Content="0:00 / 0:00" Height="50" Margin="185,76,5,0" Width="130" VerticalAlignment="Top" FontSize="16"/>
-        <Label x:Name="lblCurrentItem" Content="(no played audio)" Height="26" Margin="5,5,5,0" d:LayoutOverrides="HorizontalAlignment, Height" VerticalAlignment="Top"/>
+    <Grid Background="#FF1A1A1A">
+        <ListBox x:Name="lsbAudioFiles" Margin="5,136,5,5" d:ItemsSource="{d:SampleData ItemCount=5}" BorderBrush="{x:Null}" Background="#FF222222" Foreground="White">
+
+        </ListBox>
+        <Slider x:Name="sldPlayer" Height="25" Margin="5,41,5,0" VerticalAlignment="Top" d:LayoutOverrides="HorizontalAlignment" LargeChange="5" SmallChange="1" Foreground="#FFE5E5E5"/>
+        <Button x:Name="btnPlayPause" Height="50" Margin="5,76,0,0" Width="50" HorizontalAlignment="Left" d:LayoutOverrides="Width, Height" VerticalAlignment="Top" Cursor="Hand">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFBF953F"/>
+                    <GradientStop Color="#FFAA771C" Offset="1"/>
+                    <GradientStop Color="#FFFCF6BA" Offset="0.5"/>
+                </LinearGradientBrush>
+            </Button.Background>
+            <Image x:Name="image" Source="/play-button-arrowhead_Freepik.png" Width="30"/>
+        </Button>
+        <Button x:Name="btnStop" Height="50" Margin="65,76,0,0" Width="50" HorizontalAlignment="Left" VerticalAlignment="Top" d:LayoutOverrides="HorizontalAlignment, Height" Cursor="Hand">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFBF953F"/>
+                    <GradientStop Color="#FFAA771C" Offset="1"/>
+                    <GradientStop Color="#FFFCF6BA" Offset="0.5"/>
+                </LinearGradientBrush>
+            </Button.Background>
+            <Image x:Name="image1" Source="/stop-button_Pixel perfect.png" Width="30"/>
+        </Button>
+        <Label x:Name="lblPlayerTime" Content="0:00 / 0:00" Height="50" Margin="185,76,5,0" Width="130" VerticalAlignment="Top" FontSize="16" Foreground="White"/>
+        <Label x:Name="lblCurrentItem" Content="(no played audio)" Height="26" Margin="5,5,5,0" d:LayoutOverrides="HorizontalAlignment, Height" VerticalAlignment="Top" Foreground="White"/>
 
     </Grid>
 </Window>

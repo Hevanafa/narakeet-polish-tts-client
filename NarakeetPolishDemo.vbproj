@@ -208,5 +208,11 @@
   <ItemGroup>
     <Resource Include="nklogo-transparent_square.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="play-button-arrowhead_Freepik.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="stop-button_Pixel perfect.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>
