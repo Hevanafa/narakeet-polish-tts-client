@@ -2,6 +2,8 @@
 Imports System.Windows.Threading
 Imports NAudio.Wave
 
+' Todo: audio doesn't stop on exiting
+
 Public Class AudioPlayer
     Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
         RefreshList()
@@ -34,13 +36,13 @@ Public Class AudioPlayer
             ' https://stackoverflow.com/questions/39548466
             Dim bytes = wave_out.OutputWaveFormat.AverageBytesPerSecond
 
-            Dim len_seconds# = mp3_reader.Length / bytes
-            Dim len_mins = len_seconds \ 60
-            Dim len_secs = Int(len_seconds Mod 60)
-
             Dim seconds# = mp3_reader.Position / bytes
             Dim mins = seconds \ 60
             Dim secs = Int(seconds Mod 60)
+
+            Dim len_seconds# = mp3_reader.Length / bytes
+            Dim len_mins = len_seconds \ 60
+            Dim len_secs = Int(len_seconds Mod 60)
 
             lblPlayerTime.Content = $"{mins}:{secs:00} / {len_mins}:{len_secs:00}"
 
@@ -57,6 +59,15 @@ Public Class AudioPlayer
 
     Dim current_filename$
 
+    Function resourceUri(relative_path$) As Uri
+        ' https://stackoverflow.com/questions/12862416
+        ' alt: Windows.Application.ResourceAssembly.FullName
+        Dim assembly_name$ = Reflection.Assembly.GetExecutingAssembly.GetName.Name
+
+        ' https://stackoverflow.com/questions/350027
+        resourceUri = New Uri($"pack://application:,,,/{assembly_name};component/{relative_path}")
+    End Function
+
     Sub PlayOrPause()
         Dim lbi As ListBoxItem = lsbAudioFiles.SelectedItem
 
@@ -71,18 +82,21 @@ Public Class AudioPlayer
             If new_filename = current_filename Then
                 ' Play / Pause
                 If wave_out.PlaybackState = PlaybackState.Paused Then
+                    imgPlayPause.Source = New BitmapImage(resourceUri("Images/pause_Inkubators.png"))
                     wave_out.Play()
                 Else
+                    imgPlayPause.Source = New BitmapImage(resourceUri("Images/play-button-arrowhead_Freepik.png"))
                     wave_out.Pause()
                 End If
             Else
+                imgPlayPause.Source = New BitmapImage(resourceUri("Images/pause_Inkubators.png"))
                 PlaySelectedItem()
             End If
 
             audio_timer.Start()
         Catch ex As Exception
             MessageBox.Show(
-                $"Couldn't play the selected item: {lbi.Content}." + vbCrLf + "Reason: " + ex.Message,
+                $"Couldn't play the selected item: {lbi.Content}." + vbCrLf + ex.StackTrace.ToString + vbCrLf + "Reason: " + ex.Message,
                 "Failure",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error)
@@ -93,6 +107,15 @@ Public Class AudioPlayer
 
     Dim mp3_reader As Mp3FileReader
     Dim wave_out As WaveOut
+
+
+    Sub DisposeMp3Reader()
+        If mp3_reader Is Nothing Then Exit Sub
+        mp3_reader.Dispose()
+        wave_out.Dispose()
+        mp3_reader = Nothing
+        wave_out = Nothing
+    End Sub
 
 
     Sub PlaySelectedItem()
@@ -106,12 +129,7 @@ Public Class AudioPlayer
                     MainWindow.generated_dir + Path.DirectorySeparatorChar +
                     lbi.Content
 
-        If mp3_reader IsNot Nothing Then
-            mp3_reader.Dispose()
-            wave_out.Dispose()
-            mp3_reader = Nothing
-            wave_out = Nothing
-        End If
+        DisposeMp3Reader
 
         ' https://stackoverflow.com/questions/2488426
         mp3_reader = New Mp3FileReader(new_filename)
@@ -135,15 +153,18 @@ Public Class AudioPlayer
     End Sub
 
     Private Sub btnStop_Click(sender As Object, e As RoutedEventArgs) Handles btnStop.Click
-        mp3_reader.Dispose()
-        mp3_reader = Nothing
+        If wave_out.PlaybackState = PlaybackState.Stopped Then Exit Sub
 
+        imgPlayPause.Source = New BitmapImage(resourceUri("Images/play-button-arrowhead_Freepik.png"))
         wave_out.Stop()
-        wave_out.Dispose()
-        wave_out = Nothing
+        DisposeMp3Reader()
     End Sub
 
     Private Sub btnPlay_Click(sender As Object, e As RoutedEventArgs) Handles btnPlayPause.Click
+        If lsbAudioFiles.Items.IsEmpty Then Exit Sub
+
+        lsbAudioFiles.SelectedIndex = 0
+
         PlayOrPause()
     End Sub
 

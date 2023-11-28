@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:NarakeetPolishDemo"
+        xmlns:local="clr-namespace:UnofficialNarakeetPolishTTSClient"
         mc:Ignorable="d"
         Title="Unofficial Narakeet Polish TTS Client - By Hevanafa (Nov 2023)" Height="372" Width="510" Loaded="Window_Loaded" Icon="/nklogo-transparent_square.png">
     <Grid Background="#FF1A1A1A">
@@ -77,7 +77,7 @@
             </Grid.Background>
             <Canvas Margin="0,3,15,4" Cursor="Hand" ToolTip="Click to visit Narakeet's official website" MouseDown="Canvas_MouseDown" HorizontalAlignment="Right" Width="150">
                 <Canvas.Background>
-                    <ImageBrush ImageSource="/nklogo-transparent.png" Stretch="Uniform"/>
+                    <ImageBrush ImageSource="/Images/nklogo-transparent.png" Stretch="Uniform"/>
                 </Canvas.Background>
             </Canvas>
             <Label x:Name="lblAvailableCredits" Content="Available Credits: 0g" Margin="5,5,0,4" HorizontalAlignment="Left" Foreground="White" VerticalAlignment="Center"/>

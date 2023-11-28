@@ -11,11 +11,11 @@ Imports System.Windows
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("UnofficialNarakeetPolishTTS")>
+<Assembly: AssemblyTitle("UnofficialNarakeetPolishTTSClient")>
 <Assembly: AssemblyDescription("")>
 <Assembly: AssemblyCompany("")>
-<Assembly: AssemblyProduct("UnofficialNarakeetPolishTTS")>
-<Assembly: AssemblyCopyright("By Hevanafa, 2023")>
+<Assembly: AssemblyProduct("UnofficialNarakeetPolishTTSClient")>
+<Assembly: AssemblyCopyright("By Hevanafa, November 2023")>
 <Assembly: AssemblyTrademark("")>
 <Assembly: ComVisible(false)>
 

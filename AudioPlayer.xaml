@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:NarakeetPolishDemo"
+        xmlns:local="clr-namespace:UnofficialNarakeetPolishTTSClient"
         mc:Ignorable="d"
         Title="AudioPlayer" Height="450" Width="320" Loaded="Window_Loaded">
     <Grid Background="#FF1A1A1A">
@@ -19,7 +19,7 @@
                     <GradientStop Color="#FFFCF6BA" Offset="0.5"/>
                 </LinearGradientBrush>
             </Button.Background>
-            <Image x:Name="image" Source="/play-button-arrowhead_Freepik.png" Width="30"/>
+            <Image x:Name="imgPlayPause" Source="/Images/play-button-arrowhead_Freepik.png" Width="30"/>
         </Button>
         <Button x:Name="btnStop" Height="50" Margin="65,76,0,0" Width="50" HorizontalAlignment="Left" VerticalAlignment="Top" d:LayoutOverrides="HorizontalAlignment, Height" Cursor="Hand">
             <Button.Background>
@@ -29,7 +29,7 @@
                     <GradientStop Color="#FFFCF6BA" Offset="0.5"/>
                 </LinearGradientBrush>
             </Button.Background>
-            <Image x:Name="image1" Source="/stop-button_Pixel perfect.png" Width="30"/>
+            <Image x:Name="image1" Source="/Images/stop-button_Pixel perfect.png" Width="30"/>
         </Button>
         <Label x:Name="lblPlayerTime" Content="0:00 / 0:00" Height="50" Margin="185,76,5,0" Width="130" VerticalAlignment="Top" FontSize="16" Foreground="White"/>
         <Label x:Name="lblCurrentItem" Content="(no played audio)" Height="26" Margin="5,5,5,0" d:LayoutOverrides="HorizontalAlignment, Height" VerticalAlignment="Top" Foreground="White"/>
