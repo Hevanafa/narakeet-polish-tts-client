@@ -1,8 +1,7 @@
 ﻿Imports System.IO
 Imports System.Windows.Threading
+Imports NAudio.Wave
 
-' Todo: fix seeking related bugs
-' Todo: learn how to play audio properly with clock controller
 Public Class AudioPlayer
     Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
         RefreshList()
@@ -29,21 +28,31 @@ Public Class AudioPlayer
 
 
     Sub Audio_Timer_Tick(sender As Object, e As EventArgs)
-        lblPlayerTime.Content = If(
-            media_player.Source IsNot Nothing AndAlso media_player.NaturalDuration.HasTimeSpan,
-            media_player.Position.ToString("mm\:ss") + " / " + media_player.NaturalDuration.TimeSpan.ToString("mm\:ss"),
-            "0:00 / 0:00")
+        If mp3_reader Is Nothing Then
+            lblPlayerTime.Content = "0:00 / 0:00"
+        Else
+            ' https://stackoverflow.com/questions/39548466
+            Dim bytes = wave_out.OutputWaveFormat.AverageBytesPerSecond
 
-        sldPlayer.Value = media_player.Position.TotalSeconds
-        sldPlayer.Maximum = media_player.NaturalDuration.TimeSpan.TotalSeconds
+            Dim len_seconds# = mp3_reader.Length / bytes
+            Dim len_mins = len_seconds \ 60
+            Dim len_secs = Int(len_seconds Mod 60)
+
+            Dim seconds# = mp3_reader.Position / bytes
+            Dim mins = seconds \ 60
+            Dim secs = Int(seconds Mod 60)
+
+            lblPlayerTime.Content = $"{mins}:{secs:00} / {len_mins}:{len_secs:00}"
+
+            If Not isDraggingSeek Then
+                sldPlayer.Maximum = mp3_reader.Length / bytes
+                sldPlayer.Value = mp3_reader.Position / bytes
+            End If
+        End If
     End Sub
 
     Dim audio_timer As New DispatcherTimer With {
         .Interval = TimeSpan.FromSeconds(1)
-    }
-
-    Dim media_player As New MediaPlayer With {
-        .ScrubbingEnabled = True    ' https://stackoverflow.com/questions/2993733
     }
 
     Dim current_filename$
@@ -61,18 +70,10 @@ Public Class AudioPlayer
 
             If new_filename = current_filename Then
                 ' Play / Pause
-                If media_player.Clock.CurrentState = Animation.ClockState.Stopped Then
-                    media_player.Clock.Controller.Seek(TimeSpan.FromSeconds(0), Animation.TimeSeekOrigin.BeginTime)
-                    media_player.Clock.Controller.Begin()
+                If wave_out.PlaybackState = PlaybackState.Paused Then
+                    wave_out.Play()
                 Else
-                    If media_player.Clock.IsPaused Then
-                        ' Resume playback
-                        media_player.Clock.Controller.Resume()
-                        audio_timer.Start()
-                    Else
-                        media_player.Clock.Controller.Pause()
-                        audio_timer.Stop()
-                    End If
+                    wave_out.Pause()
                 End If
             Else
                 PlaySelectedItem()
@@ -90,33 +91,37 @@ Public Class AudioPlayer
         End Try
     End Sub
 
+    Dim mp3_reader As Mp3FileReader
+    Dim wave_out As WaveOut
+
+
     Sub PlaySelectedItem()
+        ' Play new file
+
         Dim lbi As ListBoxItem = lsbAudioFiles.SelectedItem
 
         If lbi Is Nothing Then Exit Sub
 
-        ' Play new file
-        If media_player.Clock IsNot Nothing Then
-            media_player.Clock.Controller.Stop()
-        End If
-
-        Dim new_filename = AppDomain.CurrentDomain.BaseDirectory + Path.DirectorySeparatorChar +
+        Dim new_filename$ = AppDomain.CurrentDomain.BaseDirectory + Path.DirectorySeparatorChar +
                     MainWindow.generated_dir + Path.DirectorySeparatorChar +
                     lbi.Content
 
-        media_player.Clock = Nothing
+        If mp3_reader IsNot Nothing Then
+            mp3_reader.Dispose()
+            wave_out.Dispose()
+            mp3_reader = Nothing
+            wave_out = Nothing
+        End If
+
+        ' https://stackoverflow.com/questions/2488426
+        mp3_reader = New Mp3FileReader(new_filename)
+        wave_out = New WaveOut
+        wave_out.Init(mp3_reader)
+        wave_out.Play()
+
         current_filename = new_filename
 
-        Dim target_uri = New Uri(current_filename)
-        Dim tl As New MediaTimeline(target_uri)
-        Dim media_clock As MediaClock = tl.CreateClock(True)
-        media_player.Clock = media_clock
-        media_player.Clock.Controller.Stop()
-
         lblCurrentItem.Content = lbi.Content
-        If media_player.Clock.CurrentState = Animation.ClockState.Stopped Then
-            media_player.Clock.Controller.Begin()
-        End If
     End Sub
 
     Private Sub lsbAudioFiles_MouseDoubleClick(sender As Object, e As MouseButtonEventArgs) Handles lsbAudioFiles.MouseDoubleClick
@@ -130,15 +135,29 @@ Public Class AudioPlayer
     End Sub
 
     Private Sub btnStop_Click(sender As Object, e As RoutedEventArgs) Handles btnStop.Click
-        media_player.Clock.Controller.Stop()
-        audio_timer.Stop()
+        mp3_reader.Dispose()
+        mp3_reader = Nothing
+
+        wave_out.Stop()
+        wave_out.Dispose()
+        wave_out = Nothing
     End Sub
 
     Private Sub btnPlay_Click(sender As Object, e As RoutedEventArgs) Handles btnPlayPause.Click
         PlayOrPause()
     End Sub
 
-    Private Sub sldPlayer_MouseUp(sender As Object, e As MouseButtonEventArgs) Handles sldPlayer.MouseUp
-        media_player.Clock.Controller.Seek(TimeSpan.FromSeconds(sldPlayer.Value), Animation.TimeSeekOrigin.BeginTime)
+    ' https://stackoverflow.com/a/1064852
+    Private Sub sldPlayer_PreviewMouseUp(sender As Object, e As MouseButtonEventArgs) Handles sldPlayer.PreviewMouseUp
+        isDraggingSeek = False
+
+        ' https://stackoverflow.com/questions/10371741/
+        mp3_reader.Position = CLng(sldPlayer.Value * wave_out.OutputWaveFormat.AverageBytesPerSecond)
+    End Sub
+
+    Dim isDraggingSeek = False
+
+    Private Sub sldPlayer_PreviewMouseDown(sender As Object, e As MouseButtonEventArgs) Handles sldPlayer.PreviewMouseDown
+        isDraggingSeek = True
     End Sub
 End Class
