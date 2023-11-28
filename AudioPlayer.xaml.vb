@@ -166,7 +166,7 @@ Public Class AudioPlayer
     End Sub
 
     Private Sub btnStop_Click(sender As Object, e As RoutedEventArgs) Handles btnStop.Click
-        If wave_out.PlaybackState = PlaybackState.Stopped Then Exit Sub
+        If wave_out Is Nothing OrElse wave_out.PlaybackState = PlaybackState.Stopped Then Exit Sub
 
         ChangePlayImage(False)
         wave_out.Stop()
